@@ -1,0 +1,87 @@
+rescue 변수를 이요해서 메일로도 보낼수 있다
+
+앤서블 -> 
+
+기본 5개씩 진행가능하지만, 추가 병렬작업 설정할수 있음
+
+5
+
+
+subscription-manager repos --enable=rhel-7-server-rpms
+subscription-manager repos --enable=rhel-7-server-extras-rpms
+subscription-manager repos --enable=rhel-7-server-optional-rpms
+
+
+
+
+
+mkdir ansible
+
+1. 아파치 설치
+2. 진자 ip.txt
+아파치가 읽게
+
+
+ 
+ 
+---
+- name: Apache Install
+  hosts: localhost
+  tasks:
+     - name: install docker service
+       get_url:
+         url: https://bootstrap.pypa.io/get-pip.py
+         dest: /ansible/get-pip.py
+
+         mode: 0741
+     - name: Run pip
+       shell: python /ansible/get-pip.py
+     - name: install pip install
+       pip:
+         name: "{{ item }}"
+         extra_args: --ignore-installed
+       loop:
+         - docker-compose
+         - pymysql
+     - name: Create a mysql container
+       docker_container:
+         name: mariadb
+         image: mariadb:latest
+         volumes:
+           - /root/mysql:/var/lib/mysql --user 1000
+         state: started
+# recreate: yes
+         ports:
+         - "3306:3306"
+         env: "MYSQL_ALLOW_EMPTY_PASSWORD=true"
+
+     - name: Create a wordpress container
+       docker_container:
+         name: wordpress
+         image: wordpress:latest
+         state: started
+         links:
+           - "mariadb:mariadb"
+         ports:
+           - "8080:80"
+         env:
+           WORDPRESS_DB_HOST: mariadb
+           WORDPRESS_DB_NAME: wp
+           WORDPRESS_DB_USER: wp
+           WORDPRESS_DB_PASSWORD: wp
+		   
+		   
+		   
+		   
+		   
+		   
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab autoindent
+set cursorcolumn
+syntax on
+set foldlevelstart=20
+set ruler
+
+
+ansible galaxy
+ansible hub
+
