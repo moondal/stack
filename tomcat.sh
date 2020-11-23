@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Required field
-VERSION=9.0.39
+VERSION=9.0.40
 PREFIX=/data/was
 
 
